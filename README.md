@@ -1,0 +1,2 @@
+# AutoWechat_LMStudio
+使用LMStudio和Python实现微信自动AI回复
