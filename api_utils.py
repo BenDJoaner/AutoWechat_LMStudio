@@ -17,12 +17,16 @@ def get_api_selections():
     """
     获取所有加载好的模型
     """
-    response = requests.get("http://127.0.0.1:1234/v1/models/")
-    if response.status_code == 200:
-        models = response.json().get("data", [])
-        return models
-    else:
-        print(f"Request failed with status code: {response.status_code}")
+    try:
+        response = requests.get("http://127.0.0.1:1234/v1/models/")
+        if response.status_code == 200:
+            models = response.json().get("data", [])
+            return models
+        else:
+            print(f"请求服务失败 status code: {response.status_code}")
+            return []
+    except requests.RequestException as e:
+        print("请求服务失败，请确认是否在LM-Studio中已经打开服务！")
         return []
 
 def remove_think_tags(text):
@@ -100,6 +104,6 @@ def get_api_reply(user_input, model_id):
         messages.append({"role": "assistant", "content": full_content})
         return full_content
     else:
-        print(f"Request failed with status code: {response.status_code}")
+        print(f"加载模型失败 status code: {response.status_code}")
         print(response.text)
         return "抱歉，我暂时无法回复。"

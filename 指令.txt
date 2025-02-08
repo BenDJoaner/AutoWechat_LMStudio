@@ -1,0 +1,71 @@
+{# 定义宏以减少重复代码 #}
+{% macro format_tool_call(tool) -%}
+{{ '```json\n' + tool['function']['arguments'] + '\n```' }}
+{%- endmacro %}
+
+{# 初始化命名空间变量 #}
+{% set namespace_vars = {
+    'is_first_tool_call': false,
+    'is_tool': false,
+    'is_output_first': true,
+    'system_prompt': ''
+} %}
+
+{# 提取系统提示 #}
+{% for message in messages %}
+    {% if message['role'] == 'system' %}
+        {% set namespace_vars.system_prompt = message['content'] %}
+    {% endif %}
+{% endfor %}
+
+{# 开始生成提示 #}
+{{ bos_token }}{{ namespace_vars.system_prompt }}
+
+{# 遍历消息列表 #}
+{% for message in messages %}
+    {# 处理用户消息 #}
+    {% if message['role'] == 'user' %}
+        {% set namespace_vars.is_tool = false %}
+        {{ '### User:\n' + message['content'] }}
+
+    {# 处理助手消息（工具调用） #}
+    {% elif message['role'] == 'assistant' and message['content'] is none %}
+        {% set namespace_vars.is_tool = false %}
+        {% for tool in message['tool_calls'] %}
+            {% if not namespace_vars.is_first_tool_call %}
+                {{ '### Tool Call:\n' + tool['type'] + ' - ' + tool['function']['name'] + '\n' + format_tool_call(tool) }}
+                {% set namespace_vars.is_first_tool_call = true %}
+            {% else %}
+                {{ '\n### Tool Call:\n' + tool['type'] + ' - ' + tool['function']['name'] + '\n' + format_tool_call(tool) }}
+            {% endif %}
+        {% endfor %}
+
+    {# 处理助手消息（普通回复） #}
+    {% elif message['role'] == 'assistant' and message['content'] is not none %}
+        {% if namespace_vars.is_tool %}
+            {{ '### Assistant (Tool Output):\n' + message['content'] }}
+            {% set namespace_vars.is_tool = false %}
+        {% else %}
+            {% set content = message['content'] %}
+            {% if '</think>' in content %}
+                {% set content = content.split('</think>') | last %}
+            {% endif %}
+            {{ '### Assistant:\n' + content }}
+        {% endif %}
+
+    {# 处理工具输出 #}
+    {% elif message['role'] == 'tool' %}
+        {% set namespace_vars.is_tool = true %}
+        {% if namespace_vars.is_output_first %}
+            {{ '### Tool Output:\n' + message['content'] }}
+            {% set namespace_vars.is_output_first = false %}
+        {% else %}
+            {{ '\n### Tool Output:\n' + message['content'] }}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{# 添加生成提示（如果需要） #}
+{% if add_generation_prompt and not namespace_vars.is_tool %}
+    {{ '### Assistant:\n' }}
+{% endif %}

@@ -9,6 +9,15 @@ wx = WeChat()
 firstLoad = True
 nickname = wx.nickname  # 获取微信昵称
 
+# 定义过滤条件
+filter_conditions = ["Recall", "SYS", "Time", "Self"]
+
+def should_filter_message(msg_type):
+    """
+    判断消息类型是否应该被过滤
+    """
+    return msg_type in filter_conditions
+
 def select_model():
     """
     列出所有可选择的模型，并让用户选择一个
@@ -33,6 +42,7 @@ def auto_reply(model_id, filter_nickname):
     """
     微信自动回复逻辑
     """
+    print(f"已选择模型：{model_id}\n过滤昵称：{filter_nickname}\n开始监听并自动回复消息...")
     global firstLoad
     # 获取初始消息记录
     initial_msg = ""
@@ -46,7 +56,7 @@ def auto_reply(model_id, filter_nickname):
                 # 排除已经上一次已经回答的内容
                 # 排除自己发送的消息
                 # 检查消息内容是否包含 "@nickname"
-                if msg[0] != "SYS" and msg[0] != "Time" and msg[0] != "Self" and (not filter_nickname or f"@{nickname}" in msg[1]):
+                if not should_filter_message(msg[0]) and (not filter_nickname or f"@{nickname}" in msg[1]):
                     last_msg = msg
                     if firstLoad == True:
                         initial_msg = last_msg[1]
@@ -63,6 +73,8 @@ def auto_reply(model_id, filter_nickname):
                 # 去掉 "@nickname" 触发词
                 user_input = content.replace(f"@{nickname}", "").strip() if filter_nickname else content.strip()
                 
+                if filter_nickname:
+                    user_input = f"{sender}说：{user_input}"
                 try:
                     # 调用 API 获取回复
                     reply = get_api_reply(user_input, model_id)
@@ -105,7 +117,7 @@ def select_filter_option():
     return int(choice) if choice.isdigit() and int(choice) in [1, 2] else 1
 
 if __name__ == "__main__":
-    print(f"自动回复机器人正在运行...监听触发关键词：@{nickname}")
+    print(f"自动回复机器启动...")
     model_id = select_model()
     if model_id:
         filter_option = select_filter_option()
