@@ -73,7 +73,7 @@
 ![downloadModel](Img/run1.png)
 ![downloadModel](Img/run2.png)
 ---
-- 模型显示绿色的Ready后，把Status开关打开，这时候能看到右边有个localhost地址和端口，本地玩的话不用管。还有个模型token，需要复制到AutoChat.py的模型名称中。
+- 模型显示绿色的Ready后，把Status开关打开，这时候能看到右边有个localhost地址和端口，本地玩的话不用管。
 ![downloadModel](Img/run6.png)
 - PS：如果有兴趣，可以在右上角点开这个文档，我也是从这里拿到post请求的head和body格式的。
 ![downloadModel](Img/run4.png)
@@ -120,7 +120,7 @@ pip install wxauto requests
 - **功能**：微信自动回复主逻辑。
   - 监听微信消息。
   - 过滤自己发送的消息。
-  - 当消息包含 `@乌龟向上爬` 时，调用 `get_api_reply` 生成回复并发送。
+  - 当消息包含 `@你的微信昵称` 时，调用 `get_api_reply` 生成回复并发送。
 
 ---
 
@@ -131,34 +131,20 @@ pip install wxauto requests
 ```python
 url = "http://127.0.0.1:1234/v1/chat/completions"
 ```
-### 2. 配置 模型token
-修改代码中的请求的body `data` 中的model的值为当前加载好的模型token
-```python
-    # 定义请求体
-    data = {
-        "model": "deepseek-r1-distill-qwen-1.5b",
-        "messages": messages,
-        "temperature": 0.7,
-        "max_tokens": -1,
-        "stream": True
-    }
-```
-![downloadModel](Img/run5.png)
-### 2. 配置你在群中的昵称
-修改代码中的 `sender != "乌龟向上爬"`，将 `"乌龟向上爬"` 替换为你的微信昵称，用于判断群里是否有人@你，以及在推理之前先把@你的那部分去掉，以免模型因为名字触发词瞎推理：
-```python
-if "@你的微信昵称" in msg[1]:
 
-# 去掉 "@乌龟向上爬" 触发词
-user_input = content.replace("@你的微信昵称", "").strip()
-```
-
-### 3. 运行程序
+### 2. 运行程序
 在终端中运行以下命令启动程序：
 ```bash
 python wechat_bot.py
+自动回复机器人正在运行...
+可选择的模型:
+1. deepseek-r1-distill-qwen-1.5b
+2. nomic-ai/nomic-embed-text-v1.5-GGUF
+3. text-embedding-nomic-embed-text-v1.5
+请输入选择的模型编号:
 ```
-### 4. 使用说明
+- 运行后会列出可选模型，输入你想运行的模型后回车开始运行
+### 3. 使用说明
 1. 确保微信客户端已登录，并且 `wxauto` 能够正确连接到微信，并且微信自动被调出到前台。
 2. 在微信群或私聊中发送包含 `@你的微信昵称` 的消息，例如：
    ```
