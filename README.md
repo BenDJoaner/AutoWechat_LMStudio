@@ -31,9 +31,12 @@
 2. 没有魔法的话，可以去镜像网站：[hf-mirror](https://hf-mirror.com/)
 3. 但是直接去找模型对于新手不仅眼花，而且容易白下载不合适的模型，建议在lmstudio里面下，最简单也最直观：
 - 点击左侧的放大镜切页，打开下载界面，在上面搜索deepseek或者其他感兴趣的，然后找到右边的详情：（有可能会存在搜索失败的情况，可以试多几次，应该不用魔法）
-![downloadModel](Img/downloadModel.png)
+<img src="Img/downloadModel.png" alt="downloadModel" width="500">
 - 在详情界面点击图中的绿色小标代表说可以完美运行30t/s以上吧，小窗口可能需要调整下参数，红色的就几乎完全不能跑了，可以看情况选择（可参考本人硬件推理速度对比在下面，一般来说1.5B的参数量在没有集显的CPU上也能很流畅）
-![downloadModel](Img/downloadModel2.png)![downloadModel](Img/downloadModel3.png)
+  <div>
+    <img src="Img/downloadModel2.png" alt="downloadModel2" width="200">
+    <img src="Img/downloadModel3.png" alt="downloadModel3" width="200">
+  </div>
 - 最后点击下载即可。
 
 ## 性能对比表(除了1.5B是Q8，其他都是Q4)
@@ -47,34 +50,31 @@
 - **内存**: 16G 
 ---
 
-| 模型    | 性能 | Labtop |Macbook|
-|-------------|----------------------|------|------|
-| 1.5B        | 87 t/s                   | ![1.5B](Img/1.5B.png) |![1.5B](Img/mac1.5B.png) |
-| 8B          | 55 t/s                   | ![8B](Img/8B.png)   | ![8B](Img/mac8B.png)   |
-| 14B         | 31 t/s                   | ![14B](Img/14B.png)  |
-| 32B         | 3.6 t/s                  | ![32B](Img/32B.png) |
-| 70B         | 0.07 t/s                 | ![70B](Img/70B.png) |
----
-
-### 参考硬件：MacBook Air
-- **CPU**:  M2
-- **内存**: 16G 
+| 模型    | rog性能 | Labtop |mac性能|Macbook|
+|-------------|----------------------|------|------|------|
+| 1.5B        | 87 t/s   | <img src="Img/1.5B.png" alt="1.5B" width="100"> | 18.27 t/s |<img src="Img/mac1.5B.png" alt="1.5B" width="100"> |
+| 8B          | 55 t/s   | <img src="Img/8B.png" alt="8B" width="100">     | 5.0 t/s    | <img src="Img/mac8B.png" alt="8B" width="100">   |
+| 14B         | 31 t/s   | <img src="Img/14B.png" alt="14B" width="100">   |           |   |
+| 32B         | 3.6 t/s  | <img src="Img/32B.png" alt="32B" width="100">   |           |   |
+| 70B         | 0.07 t/s | <img src="Img/70B.png" alt="70B" width="100">   |           |   |
 ---
 
 
 ### 3. 尝试对话和参数调优
 如果只是想直接使用模型，左边栏第一个切页，顶部栏选择已经下载好的模型等待加载完毕就行了。如果还想进行微信自动回复，也可以先在这里尝试调整出最适合自自己设备的参数，可以参考B站有个大佬对参数进行了详细说明：[DeepSeek R1 推理模型 性能调优](https://www.bilibili.com/video/BV1qoFGepEhL/?spm_id_from=333.1391.0.0&vd_source=0deefafa7585b7d517a1cf319da418b0)
-![downloadModel](Img/run3.png)
+<img src="Img/run3.png" alt="run3" width="500">
 
 ### 4. 后台运行和关键参数获取
 - 切换到左侧栏第二个切页，开发者切页，并且和上一步一样，选择模型，点击加载
-![downloadModel](Img/run1.png)
-![downloadModel](Img/run2.png)
+  <div>
+    <img src="Img/run1.png" alt="run1" width="200">
+    <img src="Img/run2.png" alt="run2" width="200">
+  </div>
 ---
 - 模型显示绿色的Ready后，把Status开关打开，这时候能看到右边有个localhost地址和端口，本地玩的话不用管。
-![downloadModel](Img/run6.png)
+- <img src="Img/run6.png" alt="run6" width="500">
 - PS：如果有兴趣，可以在右上角点开这个文档，我也是从这里拿到post请求的head和body格式的。
-![downloadModel](Img/run4.png)
+- <img src="Img/run4.png" alt="run4" width="500">
 ## Python准备
 
 ### 1. Python 安装
@@ -142,7 +142,7 @@ python wechat_bot.py
 请输入选择的模型编号:
 ```
 - 运行后会列出可选模型，输入你想运行的模型后回车开始运行
-### 3. 使用说明
+### 3. 使用说明（已更新无过滤版本）
 1. 确保微信客户端已登录，并且 `wxauto` 能够正确连接到微信，并且微信自动被调出到前台。
 2. 在微信群或私聊中发送包含 `@你的微信昵称` 的消息，例如：
    ```
@@ -155,7 +155,7 @@ python wechat_bot.py
 
 ---
 
-## 示例
+## 示例1（有过滤）
 
 ### 1. 用户输入
 ```
@@ -164,20 +164,17 @@ python wechat_bot.py
 
 ### 2. 机器人回复
 ```
+你的微信昵称：你好！很高兴见到你，有什么我可以帮忙的吗？。@用户A
+```
+
+## 示例2（无过滤）
+
+### 1. 用户输入
+```
+用户A：你好
+```
+
+### 2. 机器人回复
+```
 你的微信昵称：你好！很高兴见到你，有什么我可以帮忙的吗？。
 ```
-
-### 3. 程序输出
-```
-收到来自 [用户A] 的触发消息：@乌龟向上爬 今天天气怎么样？
-生成回复：今天天气晴朗，适合外出活动。
-已回复 [用户A]：今天天气晴朗，适合外出活动。
-```
-
-## 贡献者
-- [BenDJoaner](https://github.com/BenDJoaner)
-
----
-
-## 反馈与支持
-如有任何问题或建议，请提交 Issue 或联系作者。
