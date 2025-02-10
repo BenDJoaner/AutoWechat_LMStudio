@@ -2,8 +2,10 @@ import requests
 import json
 import re
 
+# defult_url = "127.0.0.1:1234"
+defult_url = "172.18.0.157:11434"
 # 定义 API 请求的 URL 和请求头
-url = "http://127.0.0.1:1234/v1/chat/completions"
+url = f"http://{defult_url}/v1/chat/completions"
 headers = {
     "Content-Type": "application/json"
 }
@@ -18,7 +20,7 @@ def get_api_selections():
     获取所有加载好的模型
     """
     try:
-        response = requests.get("http://127.0.0.1:1234/v1/models/")
+        response = requests.get(f"http://{defult_url}/v1/models/")
         if response.status_code == 200:
             models = response.json().get("data", [])
             return models
