@@ -46,15 +46,17 @@ def check_new_message(data):
     keys = list(data.keys())
     for key in keys:
         value_list = data[key]
-        if len(value_list) > 0:
-            sender = value_list[0][0]
-            print(f"第一个子列表的第一个元素是：{sender} >>> {sender in filter_conditions}")
+        for data in value_list:
+            sender = data.info[0]
+            print(f"条目：{sender} >> {data.info[1]}")
+            # print(f"第一个子列表的第一个元素是：{sender} >>> {sender in filter_conditions}")
             if sender in filter_conditions:
                 print(f"排除自己和系统消息 >>>> {sender}")
                 continue
             else:
-                print(f"找到符合条件的消息 >>>> {key} >> {sender}")
+                print(f"检测到符合条件的消息 >>>> {sender}")
                 return True
+
     print(f"未找到符合条件的消息 >>>> {data}")
     return False
 
@@ -73,10 +75,9 @@ def auto_reply(model_id, filter_nickname):
             continue
         # 获取下一条最新消息的来源
         nextMessage = wx.GetNextNewMessage()
-        if nextMessage:
-            if check_new_message(nextMessage) == False:
-                print("排除自己和系统消息 >>>> ", nextMessage)
-                continue
+        if nextMessage and check_new_message(nextMessage) == False:
+            print("排除自己和系统消息 >>>> ", nextMessage)
+            continue
         # 获取当前聊天框所有消息
         allMessages = wx.GetAllMessage()
         if allMessages:
@@ -89,10 +90,7 @@ def auto_reply(model_id, filter_nickname):
                 # 检查消息内容是否包含 "@nickname"
                 if not should_filter_message(msg[0], msg[1]) and (not filter_nickname or f"@{nickname}" in msg[1]):
                     last_msg = msg
-
-                    # if firstLoad == True:
-                    #     initial_msg = last_msg[1]
-                    #     firstLoad = False
+                    break
 
             # if last_msg != None and last_msg[1] != initial_msg:
             if last_msg != None:
